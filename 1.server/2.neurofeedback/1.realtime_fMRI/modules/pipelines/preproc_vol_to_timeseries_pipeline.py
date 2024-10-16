@@ -11,13 +11,13 @@
 # IMPORT DEPENDENCIES
 #############################################################################################
 
-from modules.config.exp_config import Exp
 from collections import OrderedDict
 from nilearn.signal import clean, _detrend
 import numpy as np
 from pathlib import Path
 import time
 from typing import Tuple
+import os
 
 #############################################################################################
 # DESCRIPTION
@@ -58,14 +58,14 @@ def preproc_to_baseline(whole_timeseries: np.array, baseline_vols: np.array, pre
 
     # Detrend baseline if is not already detrended
     start_baseline_detrending = time.time()
-    if Path(preprocessed_dir / 'detrended_baseline.npy').is_file():
-        detrended_baseline = np.load(preprocessed_dir / 'detrended_baseline.npy') # Load detrended baseline
+    if Path(os.path.join(preprocessed_dir,'detrended_baseline.npy')).is_file():
+        detrended_baseline = np.load(os.path.join(preprocessed_dir,'detrended_baseline.npy')) # Load detrended baseline
     else:
         detrended_baseline = _detrend(baseline_vols, # Independently detrend baseline vols to then perform zscoring normalization 
                                       inplace = False, 
                                       type = 'linear', # Linear detrending
                                       n_batches = 10)
-        np.save(preprocessed_dir / 'detrended_baseline.npy', detrended_baseline) # Save detrended baseline
+        np.save(os.path.join(preprocessed_dir,'detrended_baseline.npy'), detrended_baseline) # Save detrended baseline
     preproc_time['baseline_detrending'] = time.time() - start_baseline_detrending
 
     # Detrend timeseries to last arrived vol
@@ -79,7 +79,6 @@ def preproc_to_baseline(whole_timeseries: np.array, baseline_vols: np.array, pre
         return last_detrended_vol
 
     start_detrending = time.time()
-    #last_detrended_vol = detrend_timeseries(whole_timeseries)
     last_detrended_vol = whole_timeseries# DS NM CHANGED
     preproc_time['detrending_time'] = time.time() - start_detrending
 

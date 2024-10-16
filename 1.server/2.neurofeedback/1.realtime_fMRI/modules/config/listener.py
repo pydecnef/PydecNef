@@ -10,8 +10,7 @@
 import os
 import time
 import threading
-import pickle
-from colorama import init, Fore
+from colorama import Fore
 from modules.classes.classes import Trial
 from modules.config import shared_instances
 
@@ -45,10 +44,6 @@ class Listener:
 
 
     def _process_client_requests(self):
-############################
-# new najem addons
-        #print(self.client_request)
-############################
         # If client request signals a trial onset
         if self.client_request['request_type'] == 'trial_onset':
             shared_instances.new_trial = Trial()

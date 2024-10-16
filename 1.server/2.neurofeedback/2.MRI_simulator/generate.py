@@ -10,6 +10,7 @@
 import shutil
 import time
 from pathlib import Path
+import os
 import shutil
 from colorama import init, Fore # For colouring outputs in the terminal
 init()
@@ -38,7 +39,7 @@ script_dir = Path(__file__).absolute().parent
 
 # Define an outputs directory to copy DICOM files from real_data directory as it was a real scanner
 # this folder has to be present already there!!!
-outputs_dir = script_dir / 'outputs'
+outputs_dir = Path(os.path.join(script_dir,'outputs'))
 
 # Remove all files in outputs_dir (if there are)
 if outputs_dir.exists(): 
@@ -46,12 +47,10 @@ if outputs_dir.exists():
         file.unlink() # Remove each volume one by one
 
 # Folder with fMRI DICOM files
-real_data = script_dir / 'real_data'
-#real_data = Path('/firmm/20230111.abraloc.abraloc')
+real_data = Path(os.path.join(script_dir,'real_data'))
 #############################################################################################
 # DATA TRANSFER FROM REAL_DATA FOLDER TO OUTPUTS FOLDER
 #############################################################################################
-#print (sorted(list(real_data.glob('*.dcm'))))
 for volume in sorted(list(real_data.glob('*'))):
     print(Fore.YELLOW + f'\n[PROCESSING] Generating volume {volume.stem}...')
     time.sleep(TR) # Wait for a TR before generating the next volume

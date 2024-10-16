@@ -158,19 +158,13 @@ while True:
         print(Fore.YELLOW + '\nSubject:', Exp.subject, Fore.YELLOW + 'Session:', Exp.session, Fore.YELLOW + 'Run:', Exp.run)
         print(Fore.YELLOW + 'Trial:', shared_instances.new_trial.trial_idx)
         print(Fore.YELLOW + 'Trial onset time:', shared_instances.new_trial.trial_onset)
-############################
-# new najem addons
         if (shared_instances.new_trial.decoding_prob is not None):
             try:
                 if shared_instances.new_trial.decoding_prob != total_probs[-1]:
                     total_probs.append(shared_instances.new_trial.decoding_prob)
-                    #total_errors.append((1/shared_instances.new_trial.decoding_prob) -1 )
             except:
                     total_probs.append(shared_instances.new_trial.decoding_prob)
-                    #total_errors.append((1/shared_instances.new_trial.decoding_prob) -1 )
         print(Fore.YELLOW + 'Total probs :\n',total_probs)
-        #print(Fore.YELLOW + 'Total errors :\n',total_errors)
-############################
         print(Fore.YELLOW + 'Volume index:', new_vol.vol_idx)
         print(Fore.YELLOW + 'Volume time:', new_vol.vol_time)
         print(Fore.YELLOW + 'Volume type:', new_vol.vol_type)
@@ -183,11 +177,7 @@ while True:
         print(Fore.YELLOW + f'Number of current threads:', threading.active_count())
     else:
         print(Fore.YELLOW + 'Waiting for the first trial...') # If new_trial index is None (i.e., the experimental task did not start yet)
-    
-    #print('.....................................................................')
-
     #############################################################################################
     # PREPARE FOR NEXT VOL
     #############################################################################################
-    
     vol_idx += 1

@@ -5,6 +5,7 @@ import shutil
 from server_client_connexion import Connection
 csv_files_list = [ i for i in  os.listdir(".") if i.endswith(".csv") ]
 print("The existing csv files (created by opensesame) : ",csv_files_list)
+os.makedirs("files_sent",exist_ok=True)
 for csv_file in csv_files_list:
     if os.path.exists(os.path.join("files_sent",csv_file)):
         os.remove(os.path.join("files_sent",csv_file))

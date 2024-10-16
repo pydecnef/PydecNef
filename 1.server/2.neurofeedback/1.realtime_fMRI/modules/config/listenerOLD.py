@@ -10,8 +10,7 @@
 import os
 import time
 import threading
-import pickle
-from colorama import init, Fore
+from colorama import Fore
 from modules.classes.classes import Trial
 from modules.config import shared_instances
 

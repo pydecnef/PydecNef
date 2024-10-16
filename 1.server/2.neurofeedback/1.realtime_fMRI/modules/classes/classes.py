@@ -6,26 +6,22 @@
 # INSTITUTION: Basque Center on Cognition, Brain and Language (BCBL), Spain
 # LICENCE: GNU General Public License v3.0
 ############################################################################
-
 from modules.config import shared_instances
 from modules.config.exp_config import Exp
 from modules.pipelines.corregistration_pipeline import corregister_vol
 from modules.pipelines.preproc_vol_to_timeseries_pipeline import preproc_to_baseline, preproc_to_timeseries, preproc_to_model_session
 from modules.pipelines.trial_decoding_pipeline import average_hrf_peak_vols_decoding, average_probs_decoding, dynamic_decoding
 from modules.config import shared_instances
-from colorama import init, Fore
+from colorama import Fore
 import numpy as np
 import pandas as pd
 from pathlib import Path
-import pickle
-import sys
 import threading
 import time
-############################
-# new najem addons
-#from modules.pipelines.noise_generation import generating_noisy_signal
+import pickle
+
+# SET VARIABLES
 coadaptation_time_hist = []
-############################
 
 #############################################################################################
 # VOLUME CLASS
@@ -230,16 +226,11 @@ class Trial(Exp):
                 shared_instances.logger.update_vol(vol)
 
             self.decoding_done = True # Update trial status to trigger feedback finalization
- ############################
-# new najem addons
-            #print("the shape of the data:",preproc_vols_data.shape)
-            #print("the shape of the ground truth:",self.ground_truth)
-            if Exp.coadaptation_procedure:
+            if (Exp.coadaptation_background_warmup or Exp.coadaptation_active):
                 coadaptation_thread = threading.Thread(name="coadaptation",target=self._decoder_coadaptation)
                 self.saved_preproc_vols_data = preproc_vols_data
                 self.saved_ground_truth = self.ground_truth
                 coadaptation_thread.start()
-############################       
 
         elif self.decoding_procedure == 'average_hrf_peak_vols':
             while (self.HRF_peak_end == False) or (self.HRF_peak_vols[-1].prepared_4_decoding == False): # If decoding signal is received before HRF peak ends or last HRF peak vol is prepared 
@@ -292,13 +283,9 @@ class Trial(Exp):
                     time.sleep(0.1) # Just wait until condition is True, refreshing var status each 100 ms and avoid cannibalization of system processing resources
 
             self.decoding_done = True # Update trial status to trigger feedback finalization
-################################################
-### najem addons
     def _decoder_coadaptation(self):
         from modules.pipelines import decoding_coadaptation
-        #from modules.pipelines import decoding_coadaptation_with_fold_evaluation
         start_coadaptation_timer = time.perf_counter()
-        #decoding_coadaptation_with_fold_evaluation.coadaptation(self.saved_preproc_vols_data,self.saved_ground_truth, Exp.model_file)
         decoding_coadaptation.coadaptation(self.saved_preproc_vols_data,self.saved_ground_truth, Exp.model_file)
         end_coadaptation_timer = time.perf_counter()
         coadaptation_timer = end_coadaptation_timer - start_coadaptation_timer
@@ -385,12 +372,7 @@ class Logger(Exp):
         vol_idx = self.this_run_vols.index(vol) # Find volume index in list of vols
         variables_to_log = self._log_variables(vol) # Get information corresponding to this volume timepoint
         self.list_rows[vol_idx] = variables_to_log # Update row corresponding to a volume in rows list
-        ####################
-        # najem add on 
         df = pd.DataFrame([self.list_rows]) # Create a dataframe using list of rows
-        #####################
-        ## line commented 
-        #df = pd.DataFrame([self.list_rows]) # Create a dataframe using list of rows
         df.to_csv(Path(self.logs_dir) / f'logs.csv') # Update CSV file into logs_dir
 
     def _log_variables(self, vol):

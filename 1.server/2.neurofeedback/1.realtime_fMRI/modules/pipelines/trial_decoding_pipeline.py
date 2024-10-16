@@ -55,16 +55,8 @@ def average_hrf_peak_vols_decoding(preproc_vols_data: list, model_file: str, gro
 
     # Decoding start time
     decoding_time = OrderedDict()
-   # print("average_hrf_peak_vols_decoding")
-   # print("THE FINAL USED DATA:")
-   # print("with shape:", len(preproc_vols_data))
-   # print("shape1:", preproc_vols_data[0].shape)
-   # print("shape2:", preproc_vols_data[1].shape)
-   # print(preproc_vols_data)
     # Load pretrained model
-    model_file = str(model_file)
     clf_fit = load(model_file)
-    #clf_fit = tf.keras.models.load_model(model_file)
     
     start_decoding = time.time()
 
@@ -77,11 +69,9 @@ def average_hrf_peak_vols_decoding(preproc_vols_data: list, model_file: str, gro
     # Predict class probability
     start_prediction = time.time()
     class_probabilities = clf_fit.predict_proba(average_preproc) # Predict class probabilities over this trial averaged vol
-    #class_probabilities = clf_fit.predict(average_preproc) # Predict class probabilities over this trial averaged vols
-    print("THE class prob:",class_probabilities)
     evaluation = clf_fit.evaluate(average_preproc,[ground_truth for i in len(average_preproc)])
-    print("THE EVALUATION",evaluation)
     decoding_prob = class_probabilities[0][ground_truth] # Select the probability corresponding to the ground truth
+    print("THE DECODING PROBABILITY:",decoding_prob)
     decoding_time['prediction_time'] = time.time() - start_prediction
 
     # Decoding end time
@@ -119,17 +109,8 @@ def average_probs_decoding(preproc_vols_data: list, model_file: str, ground_trut
 
     # Decoding start time
     decoding_time = OrderedDict()
-   # print("average_probs_decoding")
-   # print("THE FINAL USED DATA:")
-   # print("with shape:", len(preproc_vols_data))
-   # print("shape1:", preproc_vols_data[0].shape)
-   # print("shape2:", preproc_vols_data[1].shape)
-   # print(preproc_vols_data)
-
     # Load pretrained model
-    model_file = str(model_file)
     clf_fit = load(model_file)
-    #clf_fit = tf.keras.models.load_model(model_file)    
 
     start_decoding = time.time()
     start_decoding_vols = time.time()
@@ -138,28 +119,16 @@ def average_probs_decoding(preproc_vols_data: list, model_file: str, ground_trut
     # Iterate over all preprocessed volumes within HRF peak
     for vol in preproc_vols_data:
         # Predict class probability
-        #class_probabilities = clf_fit.predict(vol) # Predict class probabilities over this trial averaged vols
         class_probabilities = clf_fit.predict_proba(vol) # Predict class probabilities over this trial averaged vol
-        print("THE DECODING PROB WITH CLASS PROB IS: ", class_probabilities)
-        print("the ground truth label:",ground_truth)
         decoding_prob = class_probabilities[0][int(ground_truth)] # Select the probability corresponding to the ground truth
-        print("THE class prob:",class_probabilities)
-        #print("THE METRICS:", clf_fit.metrics_names)
         vols_decoding_probs.append(decoding_prob) # Append decoding probability to list of decoding probabilities for each vol
-    print("THE TOTAL PROBS:",vols_decoding_probs)   
+    print("THE TOTAL DECODING PROBABILITIES FOR THE VOLUMES:",vols_decoding_probs)   
     averaged_decoding_prob = np.average(vols_decoding_probs) # Average probabilities of decoding ground truth across volumes
     decoding_time['decoding_vols_time'] = time.time() - start_decoding_vols
 
     # Decoding end time
     decoding_time['total_decoding_time'] = time.time() - start_decoding
     decoding_time = [decoding_time] # Convert dict to a list to store all times in a pandas dataframe
-####################################################################################
-### najem addons
-
-    #clf_fit.partial_fit()
-
-### najem addons
-####################################################################################
 
     return averaged_decoding_prob, vols_decoding_probs, decoding_time
 
@@ -191,17 +160,8 @@ def dynamic_decoding(preproc_vol: np.array, model_file: str, ground_truth: int) 
 
     # Decoding start time
     decoding_time = OrderedDict()
-   # print("dynamic_decoding")
-   # print("THE FINAL USED DATA:")
-   # print("with shape:", len(preproc_vols_data))
-   # print("shape1:", preproc_vols_data[0].shape)
-   # print("shape2:", preproc_vols_data[1].shape)
-   # print(preproc_vols_data)
-
     # Load pretrained model
-    model_file = str(model_file)
     clf_fit = load(model_file)
-    #clf_fit = tf.keras.models.load_model(model_file)
 
     start_decoding = time.time()
 
@@ -209,8 +169,8 @@ def dynamic_decoding(preproc_vol: np.array, model_file: str, ground_truth: int) 
     start_prediction = time.time()
 
     class_probabilities = clf_fit.predict_proba(preproc_vol) # Predict class probabilities over this trial averaged vol
-    #class_probabilities = clf_fit.predict(preproc_vol) # Predict class probabilities over this trial averaged vols
     decoding_prob = class_probabilities[0][ground_truth] # Select the probability corresponding to the ground truth
+    print("THE DECODING PROBABILITY:",decoding_prob)   
     decoding_time['prediction_time'] = time.time() - start_prediction
 
     # Decoding end time
