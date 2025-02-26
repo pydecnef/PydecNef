@@ -18,7 +18,7 @@ label_class_1 = 'living' # target class 1 label in the behavioral data file
 trial_idx_column = 'trial_idx' # trial idx column name in the behavioral data file
 
 # SET FILE STRUCTURE
-exp_dir = os.path.abspath(os.path.join(os.path.abspath(__file__),os.pardir,os.pardir,os.pardir) )    
+exp_dir = os.path.abspath(os.path.join(os.path.abspath(__file__),os.pardir,os.pardir,os.pardir) )
 preprocessed_dir =os.path.join(exp_dir,'2.data', 'preprocessed')
 behav_dir = Path(os.path.join(exp_dir,'2.data','raw','behav'))
 func_dir = Path(os.path.join(preprocessed_dir,'func'))
@@ -32,27 +32,27 @@ exp_data = zip(func_files, behav_files)
 
 # LABEL PREPROCESSED FUNCTIONAL VOLS WITH BEHAVIORAL DATA
 for func_file, behav_file in exp_data:
-    
+
     # Get run name
     func_parent = func_file.parent
     func_name = func_parent.name
-    
-    # Set paths as strings   
+
+    # Set paths as strings
     func_file = str(func_file)
     behav_file = str(behav_file)
     print(func_file, behav_file)
-    
+
     # Remove heatup vols from MRI data
     nii_data = load_img(func_file)
     nii_data = index_img(nii_data, slice(n_heatup_vols, None))
-    
+
     # Set first vol after heatup as new session onset (i.e., time 0) and create a new timeseries for functional data (increase time for each volume based on specified TR)
     onset_time = 0 # ms
     new_timeseries = []
     for i in range(nii_data.shape[-1]):
         new_timeseries.append(onset_time)
         onset_time += TR
-    
+
     # Extract corresponding heatup vols times from behavioral data
     df_run = pd.read_csv(behav_file, usecols=[trial_onset_time_column, target_column])
     df_run[trial_onset_time_column] -= (TR * n_heatup_vols)
@@ -73,7 +73,7 @@ for func_file, behav_file in exp_data:
         except:
             targets.append(None)
     df_run['targets_category'] = targets
-    
+
     # Get baseline vols
     baseline_vols_idxs = []
     for vol_idx, time in enumerate(new_timeseries):
@@ -82,7 +82,7 @@ for func_file, behav_file in exp_data:
     # Stablish intervals of interest based on trials_onsets
     df_run['hrf_peak_onset'] = df_run[trial_onset_time_column] + onset_hrf_peak
     df_run['hrf_peak_offset'] = df_run[trial_onset_time_column] + offset_hrf_peak
-    
+
     # Assign vols to trials based on intervals of interest
     vols_idxs_of_interest = []
     vols_of_interest_times = []
@@ -92,7 +92,7 @@ for func_file, behav_file in exp_data:
     vols_trial_onset = []
     vols_trial_hrf_peak_onset = []
     vols_trial_hrf_peak_offset = []
-    
+
     for vol_idx, time in enumerate(new_timeseries):
         for row in df_run.iterrows():
             row = row[1]
@@ -104,7 +104,7 @@ for func_file, behav_file in exp_data:
                 vols_trial_onset.append(row[trial_onset_time_column])
                 vols_trial_hrf_peak_onset.append(row['hrf_peak_onset'])
                 vols_trial_hrf_peak_offset.append(row['hrf_peak_offset'])
-                
+
     df_vols = {'vol_idx': vols_idxs_of_interest,
                'vol_time': vols_of_interest_times,
                'trial_idx': vols_trial_idx,
@@ -114,9 +114,9 @@ for func_file, behav_file in exp_data:
                'hrf_peak_offset': vols_trial_hrf_peak_offset,
                'run': func_name,
                }
-    
+
     df_vols = pd.DataFrame(df_vols)
-    
+
     # Save vols without heatup vols
     nii_data.to_filename(os.path.join(vols_of_interest_dir, func_name + '_allvols.nii.gz'))
     # Extract baseline vols

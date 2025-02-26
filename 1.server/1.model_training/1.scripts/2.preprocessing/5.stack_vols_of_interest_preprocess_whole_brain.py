@@ -13,7 +13,7 @@ import os
 detrend = True
 
 # SET FILE STRUCTURE
-exp_dir = os.path.abspath(os.path.join(os.path.abspath(__file__),os.pardir,os.pardir,os.pardir) )    #Path().absolute() 
+exp_dir = os.path.abspath(os.path.join(os.path.abspath(__file__),os.pardir,os.pardir,os.pardir) )   
 preprocessed_dir =os.path.join(exp_dir, '2.data','preprocessed')
 example_func_dir = Path(os.path.join(preprocessed_dir,'example_func'))
 vols_of_interest_dir = Path(os.path.join(preprocessed_dir,'vols_of_interest'))

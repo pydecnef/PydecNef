@@ -11,7 +11,6 @@ from nilearn.signal import _detrend
 import os
 # SETUP VARIABLES
 detrend = True
-masks = ['full_mask','lingual_native','occcipitalfusiform_native','tempoccipFusiform_native'] # list of mask name used in the ROI masking process
 # SET FILE STRUCTURE
 exp_dir = os.path.abspath(os.path.join(os.path.abspath(__file__),os.pardir,os.pardir,os.pardir) )   
 preprocessed_dir =os.path.join(exp_dir, '2.data','preprocessed')
@@ -19,13 +18,16 @@ example_func_dir = Path(os.path.join(preprocessed_dir,'example_func'))
 vols_of_interest_dir = Path(os.path.join(preprocessed_dir,'vols_of_interest'))
 rois_dir = os.path.join(exp_dir,'2.data','rois_masks')
 
+# list of mask names available in rois_mask folder used in the ROI masking process 
+masks = os.listdir(rois_dir)
+mask = [i.split(".")[0] for i in masks if not i.startswith(".") ]
 
 baseline_vols = sorted([str(run) for run in vols_of_interest_dir.glob('*_baseline.nii.gz')]) # Retrieve paths of baselines for all runs
 all_vols = sorted([str(run) for run in vols_of_interest_dir.glob('*_allvols.nii.gz')])
 vols_of_interest_csv = sorted([str(run) for run in vols_of_interest_dir.glob('*_vols_of_interest.csv')])
 runs_data = list(zip(baseline_vols, all_vols, vols_of_interest_csv))
 
-
+# a function to calculate the z_score of volumes arrays
 def zscore_func(array):
     def zscore(array, mean_array, std_array):
         array = array - mean_array

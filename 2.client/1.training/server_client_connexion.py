@@ -1,34 +1,23 @@
 ############################################################################
-# AUTHORS: Pedro Margolles & David Soto
-# EMAIL: pmargolles@bcbl.eu, dsoto@bcbl.eu
-# COPYRIGHT: Copyright (C) 2021-2022, pyDecNef
-# URL: https://pedromargolles.github.io/pyDecNef/
+# AUTHORS: Pedro Margolles & David Soto & Najemeddine Abdennour
+# EMAIL: pmargolles@bcbl.eu, dsoto@bcbl.eu, nabdennour@bcbl.eu
+# COPYRIGHT: Copyright (C) 2024-2025, pyDecNef
+# URL: https://github.com/najemabdennour/pyDecNef
 # INSTITUTION: Basque Center on Cognition, Brain and Language (BCBL), Spain
 # LICENCE: GNU General Public License v3.0
 ############################################################################
 
 import pickle
+import signal
 import socket
 import sys
 import code
 from colorama import init, Fore
+
 init(autoreset=True)
-###################################
-#### najem addons
-import signal
-def timeout(signum,frame):
+
+def timeout(signum, frame):
     raise TimeoutError
-####################################
-#############################################################################################
-# CONNECTION CLASS
-#############################################################################################
-
-# Configuration file for connecting two computers 
-# (i.e., decoding computer & experimental software computer) through an ethernet connection.
-
-#############################################################################################
-# SERVER-CLIENT CONNECTION PARAMETERS
-#############################################################################################
 
 #IP = socket.gethostname() # To use with localhost address
 IP = '192.168.242.119' # Local server computer IP
@@ -37,20 +26,16 @@ FORMAT = 'utf-8' # Data format for bytes encoding and decoding
 N_BYTES = 2000 # Maximun number of bytes to expect from connection
 TIMEOUT = 500 # Maximum number of seconds of innactivity
 
-#############################################################################################
-# CONNECT TWO COMPUTERS TO SEND AND RECEIVE PICKLED DATA FROM/TO THE EXPERIMENTAL SOFTWARE
-#############################################################################################
+class Connection:
+    def __init__(self):
 
-class Connection(): # Just accept one-one server-client connection 
-
-    IP = IP
-    PORT = PORT
-    FORMAT = FORMAT
-    N_BYTES = N_BYTES
-
-    socket.setdefaulttimeout(TIMEOUT) # Set a timeout (when client/server do not send/receive any 
+        self.ip = IP #Set the IP address for connection.
+        self.port = PORT #Set the port number for connection.
+        self.format = FORMAT #Set the data format (e.g., 'utf-8').
+        self.n_bytes = N_BYTES #Set the maximum number of bytes to receive.
+        socket.setdefaulttimeout(TIMEOUT) # Set a timeout (when client/server do not send/receive any 
                                       # data for this timeframe, then close connection)
-    
+
     def start_server(self):
 
         """ Initialize server connection side """
@@ -103,8 +88,6 @@ class Connection(): # Just accept one-one server-client connection
 
     def listen(self):
         print(Fore.YELLOW + '[WAITING] Waiting for messages...')
-        ####################
-        ### najem addons
         data = []
         signal.signal(signal.SIGALRM, timeout)
         signal.alarm(1) ### 1 seconds time out for the data segment (intersegments timeout time)
@@ -117,10 +100,8 @@ class Connection(): # Just accept one-one server-client connection
             if not packet:
                 print("end of packet segments")
             data.append(packet)
-        
         print("finished receiving all data segments.")
         message = pickle.loads(b"".join(data)) # Unpickle the message
-        #####################
         print(Fore.GREEN + f'[RECEIVED] Message: "{message}" received.')
         return message
 
@@ -130,6 +111,7 @@ class Connection(): # Just accept one-one server-client connection
         self.client.send(message) # Send message
 
 if __name__ == '__main__':
-    server = Connection()
-    server.start_server() # Start a server connection
+    # Initialize connection settings
+    conn = Connection()
+    conn.start_server()# Start a server connection
     code.interact(local=locals()) # Continue in interactive mode
