@@ -20,7 +20,7 @@ rois_dir = os.path.join(exp_dir,'2.data','rois_masks')
 
 # list of mask names available in rois_mask folder used in the ROI masking process 
 masks = os.listdir(rois_dir)
-mask = [i.split(".")[0] for i in masks if not i.startswith(".") ]
+masks = [i.split(".")[0] for i in masks if not i.startswith(".") ]
 
 baseline_vols = sorted([str(run) for run in vols_of_interest_dir.glob('*_baseline.nii.gz')]) # Retrieve paths of baselines for all runs
 all_vols = sorted([str(run) for run in vols_of_interest_dir.glob('*_allvols.nii.gz')])
