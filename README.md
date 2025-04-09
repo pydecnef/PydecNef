@@ -1,35 +1,46 @@
 <a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License"></a>
-<a href="mailto:pedromargolles@gmail.com"><img src="https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg" alt="Ask Me Anything"></a>
-<img src="https://img.shields.io/badge/Coverage-80%25-yellow.svg" alt="Coverage">
+<a href="mailto:najemabdennour@gmail.com"><img src="https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg" alt="Ask Me Anything"></a>
 <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Made%20with-Python-1f425f.svg" alt="Made with Python"></a>
 <a href="https://pedromargolles.github.io/pyDecNef/"><img src="https://img.shields.io/badge/Documentation-pyDecNef-red.svg" alt="Documentation"></a>
-<a href=""><img src="https://img.shields.io/badge/Citation-DOI-green.svg" alt="Citation"></a>
+<a href="https://doi.org/10.1101/2025.02.21.639408"><img src="https://img.shields.io/badge/Citation-DOI-green.svg" alt="Citation"></a>
 <br></br>
 
 <p align="center">
   <img src="https://pedromargolles.github.io/pyDecNef/assets/images/wide_logo2.png">
 </p>
 
-## About
+## About:
 
-The pyDecNef library provides an open and straightforward framework to perform real-time fMRI decoded neurofeedback studies in Python.
 
-From the creation of the working space, through the scripts for decoder construction and fMRI volumes pre-processing, to the scripts for neurofeedback training and data post-processing. 
+PyDecNef2.0 includes an intuitive and efficient Python framework for real-time fMRI decoded neurofeedback, integrating various machine learning techniques as in [figure 1](ML), including co-adaptation and Bayesian optimization algorithms to improve the feedback signal provided to participants and enhance the learning curves during neurofeedback training. This library is a continuation of the PyDecNef project [link](https://github.com/pedromargolles/pyDecNef), that incorporated scripts for fMRI volumes pre-processing, decoder construction, data post-processing and a full pipeline for neurofeedback training.
 
-In addition, introductory tutorials on the decoded neurofeedback technique and an advanced use of the pyDecNef pipeline are provided.
+![ML](.img/ML_performance_comparision.png)
 
-Although this library, as it is, is oriented to the development of classical decoded neurofeedback studies, it can be easily customized for other real-time brain-computer interface paradigms.
-
-For example, experiments using GLM, adaptive experimental designs where experimental conditions are modified based on brain activation patterns, optimization and calibration designs, mental reading and signal reconstruction paradigms...
+PyDecNef2.0: is an open-source, Python-based real-time fMRI decoded neurofeedback framework, that supports extensive customization and personalization for various experimental setups.
 
 **For more information and tutorials visit [pyDecNef project webpage](https://pedromargolles.github.io/pyDecNef/).**
 
-## License
+## License:
 
-pyDecNef is © 2021-2022 by Pedro Margolles & David Soto.
+pyDecNef2.0 is © 2024-2025 by Najemeddine Abdennour & Pedro Margolles & David Soto.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the [GNU General Public License version 3](https://github.com/pedromargolles/pyDecNef/blob/main/LICENSE) as published by the Free Software Foundation.
 
 This program is distributed in the hope that it will be useful, but without any warranty; without even the implied warranty of merchantability or fitness for a particular purpose. See the GNU General Public License for more details.
 
 Permissions of this strong copyleft license are conditioned on making available complete source code of licensed works and modifications, which include larger works using a licensed work, under the same license. Copyright and license notices must be preserved. Contributors provide an express grant of patent rights.
+
+
+## Introduction:
+The project follows the structure provided in [figure 2](structure), where we have two main computers. The first is the server and the second is the client. 
+- The server side is the main component and the base of all the pre-processing and decoding operations. This section includes structures to enable recieving the fMRI data in real-time and preprocess and decode the data as well as dealing with pre-recorded data. 
+- The client side is mostly used for direct communication with the experiment participants while they are inside the MRI scanner by providing stimulus and visual feedback as well as recieving the participants responses and reactions that are eventually communicated to the server side.
+
+![structure](.img/file_structure.png)
+
+## Usage and description:
+
+This package relies on the classic DecNef setup and procedure of starting with a decoder training phase, where data is collected to train a decoder, which eventually will be used in the real-time neurofeedback training phase. 
+1. In the inital step of recording the fMRI data, the only part of the package that's in use is the opensesame script "stimulus_presentation.osexp" on the client side, which is used to display the stimulus to the participant. The script is under the path '2.Client/1.training' , and all details and information on the Opensesame framework and its installation can be found [here](https://osdoc.cogsci.nl/). The log files in CSV format generated by the Opensesame script are needed for the training process since they include the participant's responses. Theses files can be moved to the server side through running the "1.sending_behavior_logs.py" script at the same path. On the server side the "1.recieve_behavior_logs.py" script under the path '1.Server/1.model_training/1.Scripts/1.Arranging_data' needs to be run simultaneously as well. (Note: The process of moving the log files in this package is still in the experimental phase and can encounter some issues, alternatively these files can be moved manually by the user.)
+2. Before we start the training procedure, we need to pre-process the data. We start with dividing the raw fMRI data according to the runs by runing the script "2.divide_raw_fmri_data_to_runs.py" under the path '1.Server/1.model_training/1.Scripts/1.Arranging_data'. The data preprocessing phase is then as simple as running every script under the path '1.Server/1.model_training/1.Scripts/2.preprocessing' in a numerical order. All the generated pre-processed files will be under the path: '1.Server/1.model_training/2.data/preprocessed'. We note that if applying a certain Region of Interest (ROIs) masks is needed for the experiment, the required ROI maks must be placed under the path: '1.Server/1.model_training/2.data/rois_masks'. 
+3. Training the decoder requires the use of the scripts under the path: '1.server/1.model_training/1.scripts/3.braindecoder/'. The "1.training_and_evaluating_models_wholebrain.py" is used to train the decoder with the whole brain data and the "2.training_and_evaluating_models_masked.py" is used for the masked data. These scripts offer an optional arguments to choose the type of decoder. The default decoder is the `extratrees` classifier from the scikit learn python library. The list of classifiers is: ["svm", "svmlinear", "decisiontree", "extratree","randomforest", "extratrees", "bagging", "gradientboosting","adaboost", "naivebayes", "kneighbors", "mlp", "sgd","logisticregression" ] , which can be accessed by adding a numerical argument to the script from `0` to `13` following the sequential order of apperance in the list. The argument `14` can be used to evaluate existing models, where the script will execute a leave one run out cross validation test to the decoder with the need of having the decoder named "evaluated_model" and placed under the path '1.Server/1.model_training/3.models/wholebrain' for the whole brain decoder or placed under  '1.Server/1.model_training/3.models/masked/{mask_name}' with {mask_name} is the name of the mask used in training the decoder. In both scripts we also conduct some preprocessing setps that can be removed by changing the variable `preprocessing` to `False` inside the script. The script also product a CSV file `info.csv` that includes the information about the used model and the preprocessing pipeline.
