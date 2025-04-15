@@ -1,7 +1,7 @@
 ############################################################################
-# AUTHORS: Pedro Margolles & David Soto
+# AUTHORS: Pedro Margolles & David Soto & Najemeddine Abdennour
 # EMAIL: pmargolles@bcbl.eu, dsoto@bcbl.eu
-# COPYRIGHT: Copyright (C) 2021-2022, pyDecNef
+# COPYRIGHT: Copyright (C) 2024-2025, pyDecNef
 # URL: https://pedromargolles.github.io/pyDecNef/
 # INSTITUTION: Basque Center on Cognition, Brain and Language (BCBL), Spain
 # LICENCE: GNU General Public License v3.0
@@ -226,11 +226,6 @@ class Trial(Exp):
                 shared_instances.logger.update_vol(vol)
 
             self.decoding_done = True # Update trial status to trigger feedback finalization
-            if (Exp.coadaptation_background_warmup or Exp.coadaptation_active):
-                coadaptation_thread = threading.Thread(name="coadaptation",target=self._decoder_coadaptation)
-                self.saved_preproc_vols_data = preproc_vols_data
-                self.saved_ground_truth = self.ground_truth
-                coadaptation_thread.start()
 
         elif self.decoding_procedure == 'average_hrf_peak_vols':
             while (self.HRF_peak_end == False) or (self.HRF_peak_vols[-1].prepared_4_decoding == False): # If decoding signal is received before HRF peak ends or last HRF peak vol is prepared 
@@ -283,17 +278,22 @@ class Trial(Exp):
                     time.sleep(0.1) # Just wait until condition is True, refreshing var status each 100 ms and avoid cannibalization of system processing resources
 
             self.decoding_done = True # Update trial status to trigger feedback finalization
+        
+        if (Exp.coadaptation_background_warmup or Exp.coadaptation_active): # cheching for use of coadaptation to open a new thread
+            coadaptation_thread = threading.Thread(name="coadaptation",target=self._decoder_coadaptation)
+            self.saved_preproc_vols_data = preproc_vols_data
+            self.saved_ground_truth = self.ground_truth
+            coadaptation_thread.start() # starting a new thread to handel coadaptation 
+
     def _decoder_coadaptation(self):
         from modules.pipelines import decoding_coadaptation
         start_coadaptation_timer = time.perf_counter()
-        decoding_coadaptation.coadaptation(self.saved_preproc_vols_data,self.saved_ground_truth, Exp.model_file)
+        decoding_coadaptation.coadaptation(self.saved_preproc_vols_data,self.saved_ground_truth, Exp.model_file) # providing the coadaptation function with the current vols and labels to update the model and coadapt the decoder
         end_coadaptation_timer = time.perf_counter()
         coadaptation_timer = end_coadaptation_timer - start_coadaptation_timer
         coadaptation_time_hist.append(coadaptation_timer)
         print(f"The coadaptation process took: {coadaptation_timer} ms\n the mean coadaptation time: {np.mean(coadaptation_time_hist)} ms, the max coadaptation time: {np.max(coadaptation_time_hist)} ms")
 
-
-###############################################    
 
     def _store_trial(self):
         try:
