@@ -1,3 +1,16 @@
+############################################################################
+# AUTHORS: Najemeddine Abdennour
+# EMAIL: nabdennour@bcbl.eu
+# COPYRIGHT: Copyright (C) 2024-2025, pyDecNef
+# URL: https://github.com/najemabdennour/pyDecNef
+# INSTITUTION: Basque Center on Cognition, Brain and Language (BCBL), Spain
+# LICENCE: GNU General Public License v3.0
+############################################################################
+
+#############################################################################################
+# IMPORT DEPENDENCIES
+#############################################################################################
+
 import pandas as pd
 import os
 from sklearn.pipeline import make_pipeline
@@ -14,6 +27,16 @@ from joblib import load, dump
 from sklearn.calibration import CalibratedClassifierCV
 from nilearn.maskers import NiftiMasker
 
+#############################################################################################
+# DESCRIPTION
+#############################################################################################
+
+# Decoder coadaptation procedure  
+
+#############################################################################################
+# Initialize variables
+#############################################################################################
+
 classification_method = Exp.classifier_type
 coadaptation_data_dir = Exp.coadaptation_training_data_dir
 masker = NiftiMasker(Exp.mask_file,).fit()
@@ -21,30 +44,35 @@ coadaptation_training_data = masker.transform(Exp.coadaptation_training_data_fil
 coadaptation_training_labels = pd.read_csv(Exp.coadaptation_training_data_labels_file)
 labels = coadaptation_training_labels["target_category"].values
 idx = labels != 2 # discard noise examples
-training_data = coadaptation_training_data[idx]
-training_labels = labels[idx]
+training_data = coadaptation_training_data[idx] # the decoder training data
+training_labels = labels[idx] # the decoder training labels
+
+#############################################################################################
+# FUNCTION
+#############################################################################################
 
 def coadaptation(vol_list,ground_truth,model_file):
     coadaptation_data_path = os.path.join(coadaptation_data_dir,"co_adaptation_data")
     coadaptation_labels_path = os.path.join(coadaptation_data_dir,"co_adaptation_labels")
     if os.path.exists(coadaptation_data_path):
         print("Loading the previous volumes that passed the coadaptation criteria")
-        full_training_data = load(coadaptation_data_path)
-        full_training_labels = load(coadaptation_labels_path)
+        full_training_data = load(coadaptation_data_path) # loading the training data & the vols that passed the coadaptation criteria
+        full_training_labels = load(coadaptation_labels_path)# loading the training labels & the labels of the vols that passed the coadaptation criteria
     else:
-        full_training_data = training_data
-        full_training_labels = training_labels
+        full_training_data = training_data # loading the training data
+        full_training_labels = training_labels # loading the training labels
     print("the shape of the data loaded for coadaptation:", full_training_data.shape)
-    no_coadapted_model = load(model_file) 
+    no_coadapted_model = load(model_file) # load the non coadapted decoder
     for vol in vol_list:
-        generated_porbs = no_coadapted_model.predict_proba(vol)
-        decoding_prob = generated_porbs[0][int(ground_truth)]
-        if decoding_prob > Exp.coadaptation_vol_acceptance_criteria:
-            full_training_data = np.vstack([full_training_data,vol])
-            full_training_labels = np.append(full_training_labels,ground_truth)
-            dump(full_training_data,coadaptation_data_path)
-            dump(full_training_labels,coadaptation_labels_path)
-
+        generated_porbs = no_coadapted_model.predict_proba(vol) # predicting the label of the new vols
+        decoding_prob = generated_porbs[0][int(ground_truth)] 
+        if decoding_prob > Exp.coadaptation_vol_acceptance_criteria: # checking if the vol decoding porb passed the coadaptation criteria
+            full_training_data = np.vstack([full_training_data,vol]) # adding vol to training data
+            full_training_labels = np.append(full_training_labels,ground_truth) # adding vol label to training labels
+            dump(full_training_data,coadaptation_data_path) # saving the new dataset 
+            dump(full_training_labels,coadaptation_labels_path) # saving the new labels
+    
+    # preparing new decoder for training to co-adapt the decoder on the new dataset and labels
     if classification_method == "svm":
         pipeline = make_pipeline(LinearSVC(dual = True,C = int(1),class_weight = 'balanced',random_state = 12345))
     elif classification_method == "svmlinear":
@@ -74,13 +102,13 @@ def coadaptation(vol_list,ground_truth,model_file):
     elif classification_method == "logisticregression":
         pipeline = make_pipeline(LogisticRegression())
 
-    pipeline.fit(full_training_data,full_training_labels)
+    pipeline.fit(full_training_data,full_training_labels) # training the decoder on the new dataset and labels
     if (Exp.coadaptation_active or Exp.coadaptation_background_warmup):
         if "_coadapted" in model_file:
             coadapted_model_path = model_file
         else:
             coadapted_model_path = str(model_file) +"_coadapted"
-        dump(pipeline,coadapted_model_path)
+        dump(pipeline,coadapted_model_path) # saving the new coadapted decoder with a new naming scheme
         if Exp.coadaptation_active:
             print(f"The updated coadaptation model saved in: {coadapted_model_path}")
         else:
