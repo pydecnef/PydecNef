@@ -6,6 +6,11 @@
 # INSTITUTION: Basque Center on Cognition, Brain and Language (BCBL), Spain
 # LICENCE: GNU General Public License v3.0
 ############################################################################
+"""
+This script is designed to recieve the behavior log files from the client side.
+
+
+"""
 from server_client_connexion import Connection
 import os
 import signal
