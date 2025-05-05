@@ -6,6 +6,15 @@
 # INSTITUTION: Basque Center on Cognition, Brain and Language (BCBL), Spain
 # LICENCE: GNU General Public License v3.0
 ############################################################################
+"""
+
+This script uses the example raw functional MRI data from a subject's session (i.e., DICOM files) to simulate 
+ a MRI scanner by moving files from the 'real_data' directory to the 'outputs' directory.
+This process is meant to test the experimental paradigm running in parallel 
+ neurofeedback scripts as it was a real session
+
+"""
+
 
 import shutil
 import time
@@ -15,13 +24,7 @@ import shutil
 from colorama import init, Fore # For colouring outputs in the terminal
 init()
 
-#############################################################################################
-# DESCRIPTION
-#############################################################################################
 
-# Using as example raw functional MRI data from a subject's session (i.e., DICOM files), simulate 
-# a MRI scanner to test the experimental paradigm running in paralel 
-# neurofeedback scripts as it was a real session
 
 #############################################################################################
 # fMRI SIMULATION VARIABLES
