@@ -18,7 +18,7 @@ PyDecNef2.0 includes an intuitive and efficient Python framework for real-time f
 
 PyDecNef2.0: is an open-source, Python-based real-time fMRI decoded neurofeedback framework, that supports extensive customization and personalization for various experimental setups.
 
-**For more information and tutorials visit [pyDecNef project webpage](https://pedromargolles.github.io/pyDecNef/).**
+**For more information and tutorials visit the previous version [pyDecNef 1.0](https://pedromargolles.github.io/pyDecNef/).**
 
 ## License:
 
@@ -73,3 +73,8 @@ We also recommend setting up a new conda environment for the package, to have a 
 - Colorama
 
 Additionally we used Opensesame 4.0 and Opensesame 4 scripts at the client side for stimuli presentation to the participants. We recommend using python version 3.11.7 since it provides the best compatibility with the scripts and Opensesame 4.0 tool (check out the Opensesame [documentations](https://osdoc.cogsci.nl/4.0/download/) for more details).
+
+
+# Citation
+If you are intrested in more detailed information about our work and the use of this project or you want to use our package, we advise you to read our [paper](https://doi.org/10.1101/2025.02.21.639408) and cite it, please.
+
