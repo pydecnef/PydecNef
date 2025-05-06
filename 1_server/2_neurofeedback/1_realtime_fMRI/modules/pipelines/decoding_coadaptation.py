@@ -6,7 +6,39 @@
 # INSTITUTION: Basque Center on Cognition, Brain and Language (BCBL), Spain
 # LICENCE: GNU General Public License v3.0
 ############################################################################
+"""
+Description:
 
+This script performs decoder coadaptation for neuroimaging data analysis. 
+It adaptively updates a machine learning model (decoder) based on incoming neuroimaging 
+volumes that meet specific criteria, allowing the model to generalize better across 
+different data examples. The process involves loading existing models, evaluating 
+new data points, and updating the model accordingly.
+
+The script processes neuroimaging data through several key steps:
+    1. Loads existing coadaptation data (if available) or initializes new training
+    2. Loads the base model for decoding from the variously supported classification algorithms (e.g., SVM, Random Forests)
+    3. Evaluates each incoming volume to determine if it meets the adaptation criteria
+    4. Updates the training dataset and labels with qualifying volumes
+    5. Re-trains the model on the updated dataset while maintaining separate models for active and background adaptation
+    6. Saves the new, adapted model
+
+Inputs:
+    - vol_list: List of neuroimaging volumes (NifTI format)
+    - ground_truth: Ground truth label for each volume in vol_list
+    - model_file: Path to the base decoder model (serialized model)
+
+Outputs:
+    - Adapted model: Updated decoder trained on new data points that meet criteria
+    - Training data and labels: Extended datasets used for retraining
+
+The script efficiently handles model adaptation by:
+    - Only processing volumes that meet the coadaptation criteria
+    - Utilizing existing pre-trained models as a foundation
+    - Saving updated models with distinct naming schemes
+    - Supporting parallel processing where possible
+    - Ensuring compatibility with various machine learning algorithms
+"""
 #############################################################################################
 # IMPORT DEPENDENCIES
 #############################################################################################

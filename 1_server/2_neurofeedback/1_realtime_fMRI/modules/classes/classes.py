@@ -23,14 +23,12 @@ import pickle
 # SET VARIABLES
 coadaptation_time_hist = []
 
-#############################################################################################
-# VOLUME CLASS
-#############################################################################################
-
-# Object containing all information relative to each volume (timings, indexes, type, file path, preprocessing status...)
-# and calls for corregistration and preprocessing fuctions
 
 class Vol(Exp):
+    """
+Class Object containing all information relative to each volume (timings, indexes, type, file path, preprocessing status...)
+ and calls for corregistration and preprocessing fuctions
+    """
     def __init__(self, 
                  vol_idx = None):
 
@@ -49,6 +47,8 @@ class Vol(Exp):
         self.decoding_time = None # Time to decode this volume
 
     def preprocessing(self):
+        """Class method for volume co-registration initiated in a different thread than the main code (i.e., brain extraction, co-registration to reference volume, ROI masking and smoothing) and
+            preprocessing using previous timeseries information """
         preprocess_vol_thread = threading.Thread(name = 'vol_preprocessing',
                                                  target = self._start_preprocessing,
                                                 ) # Preprocess volume in a new thread to avoid blocking main.py volumes filewatcher pipeline 
@@ -56,9 +56,6 @@ class Vol(Exp):
         preprocess_vol_thread.start()
 
     def _start_preprocessing(self):
-
-        """ Volume co-registration (i.e., brain extraction, co-registration to reference volume, ROI masking and smoothing) and
-            preprocessing using previous timeseries information """
 
         self.data, self.corregistration_times = corregister_vol(vol_file = self.dicom_file, # Co-registration of DICOM raw volume file
                                                                 mask_file = self.mask_file, # R.O.I. mask file
@@ -73,25 +70,28 @@ class Vol(Exp):
         self._store_vol() # Store preprocessed task volume data as an independent file
        
     def _store_vol(self):
+        """
+        Class method for saving a preprocessed version of the volumes
+        """
         np.save(Path(self.preprocessed_dir) / f'{Path(self.dicom_file).stem}.npy', self.data, allow_pickle = True) # Store this masked and preprocessed task volume data
 
 
 
-#############################################################################################
-# TIMESERIES CLASS
-#############################################################################################
-
-# Object containing all masked volumes and functions for preprocessing
-# (i.e., detrending, zscoring, high-pass filtering) each task volume in relation to previous volumes 
-# and baseline
-
 class Timeseries(Exp):
+    """
+    Class Object containing all masked volumes and functions for preprocessing
+    (i.e., detrending, zscoring, high-pass filtering) each task volume in relation to previous volumes 
+    and baseline
+    """
     heatup_vols = np.array([]) # Array to store all masked and unpreprocessed heatup volumes
     baseline_vols = np.array([]) # Array to store all masked and unpreprocessed baseline volumes
     task_vols = np.array([]) # Array to store all masked and unpreprocessed task volumes
     whole_timeseries = np.array([]) # Array to store all masked and unpreprocessed baseline + task volumes
 
     def preproc_vol_2_timeseries(self, vol):
+        """Class method Tha process volumes to timeseries
+        
+        """
         self._append_vol(vol) # First, assign this volume to a specific timeseries array (i.e., baseline_vols, task_vols and/or whole_timeseries)
         
         if vol.vol_type == 'task': # Initialize task volumes preprocessing using whole timeseries once baseline ends
@@ -114,7 +114,7 @@ class Timeseries(Exp):
 
     def _append_vol(self, vol):
 
-        """ Stack new masked volume onto baseline_vols, task_vols or whole_timeseries arrays """
+        """A class method that stack new masked volume onto baseline_vols, task_vols or whole_timeseries arrays """
 
         def vol_to_array(timeseries_array, vol):
 
@@ -147,15 +147,13 @@ class Timeseries(Exp):
             print(Fore.RED + 'Volume type is not defined.')
 
 
-
-#############################################################################################
-# TRIAL CLASS
-#############################################################################################
-
-# Object containing all information (i.e., timings, indexes, ground truth, stimuli, decoding probability...) 
-# relative to each experimental trial and fMRI volumes within them
-
+ 
 class Trial(Exp):
+    """
+    A class object containing all information (i.e., timings, indexes, ground truth, stimuli, decoding probability...) 
+    relative to each experimental trial and fMRI volumes within them
+
+    """
     def __init__(self, 
                  trial_idx = None, 
                  trial_onset = None,
@@ -176,6 +174,9 @@ class Trial(Exp):
         self.decoding_done = False # It is decoding already completed?
 
     def assign(self, vol):
+        """
+        A class method that assigns metadata information to the volumes allowing the selection of the volumes to be decoded.
+        """
 
         if self.trial_idx != None: # If task volume
             vol.vol_vs_trial_onset = vol.vol_time - self.trial_onset # Calculate volume time difference from trial onset
@@ -201,7 +202,9 @@ class Trial(Exp):
 
 
     def _decode(self):
-
+        """
+        A class method that initiate the decoding process for the selectd volumes of each trial
+        """
         if self.decoding_procedure == 'average_probs':
             while (self.HRF_peak_end == False) or (self.HRF_peak_vols[-1].prepared_4_decoding == False): # If decoding signal is received before HRF peak ends or last HRF peak vol is prepared 
                                                                                                          # for decoding, just wait until these conditions happen to start decoding volumes
@@ -286,6 +289,8 @@ class Trial(Exp):
             coadaptation_thread.start() # starting a new thread to handel coadaptation 
 
     def _decoder_coadaptation(self):
+        """A class method that initiate decoding co-adaptation 
+        """
         from modules.pipelines import decoding_coadaptation
         start_coadaptation_timer = time.perf_counter()
         decoding_coadaptation.coadaptation(self.saved_preproc_vols_data,self.saved_ground_truth, Exp.model_file) # providing the coadaptation function with the current vols and labels to update the model and coadapt the decoder
@@ -296,6 +301,9 @@ class Trial(Exp):
 
 
     def _store_trial(self):
+        """
+        A class method to store the trials with all the preprocessed volumes in a pickled object.
+        """
         try:
             trial_file = open(Path(self.trials_dir) / f'trial_{self.trial_idx}.pkl', 'wb') # Store this trial object containing all preprocessed volumes and information relative to them in a pkl file
             pickle.dump(self, trial_file)
@@ -304,18 +312,14 @@ class Trial(Exp):
             print("trial pickle could not be saved")
 
 
-
-#############################################################################################
-# WATCHER CLASS
-#############################################################################################
-
-# To process volumes as soon as they are created, a file watcher 
-# continuously polls for new files. 
-
 class Watcher(Exp):
-    
+    """
+    A Class object To process volumes as soon as they are created, a file watcher 
+    continuously polls for new files. 
+ 
+    """ 
     def empty_fMRI_folder(self):
-        """ Empty fMRI raw volumes output folder """
+        """A class method that empties fMRI raw volumes output folder """
         folder_exist = self._check_folder() # Check if MRI folder exist
         if folder_exist:
             print(Fore.CYAN  + '\n[WAIT] Removing all volumes from MRI folder...')
@@ -325,7 +329,7 @@ class Watcher(Exp):
             print(Fore.GREEN  + f'[OK] Volumes removed.')
 
     def vol_watcher(self, new_vol):
-        """ Watch for new files """
+        """A class method that watches for newly generated volume files """
         next_vol = format(new_vol.vol_idx, self.index_format) # Next expected volume name
         print(Fore.CYAN + '\n[WAIT] Waiting for volume:', next_vol)
         while True:
@@ -338,7 +342,7 @@ class Watcher(Exp):
         return dicom_file
 
     def _check_folder(self):
-        """ Look up for the MRI folder corresponding to this participant, session and run """
+        """A class mehtod that checks for the MRI folder corresponding to the current participant, session and run """
         print(Fore.CYAN  + '\n[WAIT] Checking MRI folder to watch...')
         if Path(self.raw_volumes_folder).is_dir():
             print(Fore.GREEN  + f'[OK] Folder OK.')
@@ -348,20 +352,18 @@ class Watcher(Exp):
             return False
 
 
-
-#############################################################################################
-# LOGGER CLASS
-#############################################################################################
-
-# Save data relative to timings, trials, volumes and decoding results into a CSV file
-
 class Logger(Exp):
-
+    """
+    A class object that logs data relative to timings, trials, volumes and decoding results into a CSV file
+    """
     def __init__(self):
         self.this_run_vols = [] # This fMRI run volumes objects
         self.list_rows = [] # List to store log rows (i.e., data dictionaries corresponding to each volume)
 
     def add_vol(self, vol):
+        """
+        A class method to log a new volume information
+        """
         self.this_run_vols.append(vol) # Append new_vol object to self.this_run_vols
         variables_to_log = self._log_variables(vol) # Get information corresponding to this volume timepoint
         self.list_rows.append(variables_to_log) # Append that volume information as a dictionary as a row in log file
@@ -369,6 +371,9 @@ class Logger(Exp):
         df.to_csv(Path(self.logs_dir) / f'logs.csv') # Update CSV file into logs_dir
 
     def update_vol(self, vol):
+        """
+        A class method to update the information of an already logged volume information
+        """
         vol_idx = self.this_run_vols.index(vol) # Find volume index in list of vols
         variables_to_log = self._log_variables(vol) # Get information corresponding to this volume timepoint
         self.list_rows[vol_idx] = variables_to_log # Update row corresponding to a volume in rows list
@@ -376,7 +381,8 @@ class Logger(Exp):
         df.to_csv(Path(self.logs_dir) / f'logs.csv') # Update CSV file into logs_dir
 
     def _log_variables(self, vol):
-        # Variables to log in logs.csv file
+        """A class method to specify which variables to log
+        """
         variables_to_log = {
                             'subject': Exp.subject,
                             'session': Exp.session,

@@ -6,7 +6,26 @@
 # INSTITUTION: Basque Center on Cognition, Brain and Language (BCBL), Spain
 # LICENCE: GNU General Public License v3.0
 ############################################################################
+"""
+Description: 
 
+This module contains functions for preprocessing fMRI data to prepare it for subsequent analysis or decoding.
+
+The pipeline aims to process each volume in real-time by leveraging timeseries
+data from the same session, ensuring consistent and reliable preprocessing.
+
+Key features:
+    - Detrending: Removes linear trends across time to handle scanner noise
+    - Z-scoring: Standardizes data to have zero mean and unit variance for fair comparison
+    - Baseline correction: Uses reference data (baseline volumes) for normalization
+    - Session-specific processing: Allows for model construction using session-unique data
+
+Functions:
+    1. preproc_to_baseline(): Processes last volume using baseline data
+    2. preproc_to_timeseries(): Preprocesses entire timeseries into a single volume
+    3. preproc_to_model_session(): Prepares data for model construction using session statistics
+
+"""
 #############################################################################################
 # IMPORT DEPENDENCIES
 #############################################################################################

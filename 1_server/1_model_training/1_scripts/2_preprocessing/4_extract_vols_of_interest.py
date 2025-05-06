@@ -1,6 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+"""
+ This script extracts volumes of interest from functional MRI data based on:
+     - Behavioral data (including trial onset times and target classifications)
+     - Functional data alignment to reference space using ANI/AFNI tools
+ 
+ The script performs the following steps:
+     1. Loads functional and behavioral data
+     2. Matches each run's functional data with its corresponding behavioral file
+     3. Creates a time series representation of the functional data
+     4. Extracts heatup volumes (first few TRs) as baseline for normalization
+     5. Identifies time windows of interest based on trial onset times and HRF peaks
+     6. Extracts and saves:
+         - All volume data
+         - Baseline volume data (after removing heatup)
+         - Volumes of interest (based on experiment timing)
+ 
+ The extracted volumes are saved in a directory structure matching the original data organization.
+"""
 # IMPORT BASIC DEPENDENCIES
 from pathlib import Path
 import pandas as pd

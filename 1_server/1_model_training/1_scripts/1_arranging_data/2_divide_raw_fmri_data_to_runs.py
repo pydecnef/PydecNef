@@ -12,18 +12,16 @@ This script organizes raw FMRI data into separate runs within a decoder's traini
 The script begins by defining paths for where the raw FMRI data is stored and where it should be organized. It uses a test mode flag to adjust these paths if needed.
 
 Steps:
-
-1. Determine the main folder containing raw FMRI data.
-2. Identify today's directories in this main folder.
-3. Extract unique run IDs from filenames.
-4. For each run, create a destination folder in the decoder's training directory.
-5. Copy corresponding files into their respective run folders.
+    1. Determine the main folder containing raw FMRI data.
+    2. Identify today's directories in this main folder.
+    3. Extract unique run IDs from filenames.
+    4. For each run, create a destination folder in the decoder's training directory.
+    5. Copy corresponding files into their respective run folders.
 
 The script ensures that:
-
-- Raw data is only moved if it matches the current run ID.
-- Each run has its own subdirectory under 'raw/func'.
-- The most recent directories are prioritized for organization.
+    - Raw data is only moved if it matches the current run ID.
+    - Each run has its own subdirectory under 'raw/func'.
+    - The most recent directories are prioritized for organization.
 
 Note: This script assumes that filenames contain a numeric sequence indicating the run ID after the volume ID numeric sequence separated by the underscore(e.g., ''001_000007_000001.dcm' corresponds to the first scan in run 7').
 """

@@ -6,7 +6,9 @@
 # INSTITUTION: Basque Center on Cognition, Brain and Language (BCBL), Spain
 # LICENCE: GNU General Public License v3.0
 ############################################################################
-
+"""
+This script is used to establish a server client connexion between two terminals (two computers) 
+"""
 import pickle
 import socket
 import sys
@@ -38,6 +40,8 @@ TIMEOUT = 500 # Maximum number of seconds of innactivity
 
 class Connection(): # Just accept one-one server-client connection 
 
+    """ A class to establish connection between two terminals through sockets"""
+    
     IP = IP
     PORT = PORT
     FORMAT = FORMAT
@@ -48,7 +52,7 @@ class Connection(): # Just accept one-one server-client connection
     
     def start_server(self):
 
-        """ Initialize server connection side """
+        """ A class method to initialize server connection side """
 
         self.server = socket.socket(socket.AF_INET, # Start TCP/IP socket
                                     socket.SOCK_STREAM)
@@ -79,7 +83,7 @@ class Connection(): # Just accept one-one server-client connection
 
     def start_client(self):
 
-        """ Initialize client connection side """
+        """A class method to initialize client connection side """
 
         self.client = socket.socket(socket.AF_INET, # Start TCP/IP socket
                                    socket.SOCK_STREAM)
@@ -97,6 +101,9 @@ class Connection(): # Just accept one-one server-client connection
             sys.exit() # To close the client script in case connection to specified IP and PORT fails
 
     def listen(self):
+
+        """A class method to listen for incoming packets"""
+
         print(Fore.YELLOW + '\n[WAITING] Waiting for messages...')
         message = self.client.recv(self.N_BYTES) # Receive the message
         message = pickle.loads(message) # Unpickle the message
@@ -104,6 +111,9 @@ class Connection(): # Just accept one-one server-client connection
         return message
 
     def send(self, message):
+
+        """A class method to send packets"""
+
         print(Fore.YELLOW + f'[SENDING] Sending "{message}"...')
         message = pickle.dumps(message) # Pickle the message
         self.client.send(message) # Send message

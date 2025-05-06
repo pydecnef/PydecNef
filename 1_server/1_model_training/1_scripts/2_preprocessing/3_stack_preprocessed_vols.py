@@ -4,18 +4,18 @@
 This script concatenates all raw functional MRI (fMRI) volumes from multiple runs into a single volume per run.
 
 The script processes data stored in the following directory structure:
-- The root directory is determined by the location of this script.
-- Inside, there's an 'exp_dir' which points to the experiment directory.
-- Within 'exp_dir', there's a '2.data/preprocessed' subdirectory containing the processed data.
-- Each run (folder) under 'preprocessed/func' contains raw image files ('*.nii') that need to be concatenated.
+    - The root directory is determined by the location of this script.
+    - Inside, there's an 'exp_dir' which points to the experiment directory.
+    - Within 'exp_dir', there's a '2.data/preprocessed' subdirectory containing the processed data.
+    - Each run (folder) under 'preprocessed/func' contains raw image files ('*.nii') that need to be concatenated.
 
 Steps:
-1. Determine the root and experiment directories.
-2. Identify all functional directories under 'preprocessed/func'.
-3. For each run directory, collect all .nii files.
-4. Sort these files by their numeric index in the filename.
-5. Concatenate the sorted images into a single volume per run.
-6. Delete the individual files after concatenation to save space.
+    1. Determine the root and experiment directories.
+    2. Identify all functional directories under 'preprocessed/func'.
+    3. For each run directory, collect all .nii files.
+    4. Sort these files by their numeric index in the filename.
+    5. Concatenate the sorted images into a single volume per run.
+    6. Delete the individual files after concatenation to save space.
 
 The code begins by setting up the necessary imports and directories, then iterates over each run, processes its volumes, stacks them, saves the result, and cleans up by removing temporary files.
 """

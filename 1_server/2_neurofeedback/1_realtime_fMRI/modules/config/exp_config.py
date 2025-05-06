@@ -6,7 +6,11 @@
 # INSTITUTION: Basque Center on Cognition, Brain and Language (BCBL), Spain
 # LICENCE: GNU General Public License v3.0
 ############################################################################
+"""
+This script sets the configuration and parameters of the realtime fMRI procedure read from the '1_server/2_neurofeedback/config.ini' file.
 
+
+"""
 from pathlib import Path
 import time
 from colorama import init, Fore

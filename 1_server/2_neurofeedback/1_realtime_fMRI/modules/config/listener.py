@@ -6,7 +6,14 @@
 # INSTITUTION: Basque Center on Cognition, Brain and Language (BCBL), Spain
 # LICENCE: GNU General Public License v3.0
 ############################################################################
+"""
 
+This module implements a listener class capable of handling client requests in an 
+asynchronous manner, ensuring that multiple operations can be processed without blocking
+each other. The listener class is designed to support flexible request-action pairings,
+allowing for customizable experimental setups.
+
+"""
 import os
 import time
 import threading

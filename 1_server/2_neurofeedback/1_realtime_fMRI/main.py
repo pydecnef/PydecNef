@@ -6,7 +6,30 @@
 # INSTITUTION: Basque Center on Cognition, Brain and Language (BCBL), Spain
 # LICENCE: GNU General Public License v3.0
 ############################################################################
+"""
+Description: Real-time fMRI data processing and decoding pipeline
 
+This module serves as the main entry point for the real-time fMRI data processing 
+pipeline, handling server communication, volume preprocessing, and trial management.
+
+The pipeline processes fMRI volumes in real-time, enabling efficient data handling,
+preprocessing, and decoding while maintaining asynchronous processing to avoid blocking.
+
+Key features:
+    - Server initialization and request handling
+    - Volume acquisition and preprocessing
+    - Trial management and decoding
+    - Data logging and console reporting
+    - Heatup and baseline correction handling
+
+Functions:
+    1. listen(): Starts listening for client requests in an independent thread
+    2. process_volume(): Handles volume acquisition, labeling, and preprocessing
+    3. manage_trials(): Manages trial creation, assignment, and decoding
+    4. handle_preprocessing(): Coordinates volume preprocessing in separate threads
+    5. console_report(): Provides real-time feedback on processing status
+
+"""
 import os
 import time
 from colorama import init, Fore

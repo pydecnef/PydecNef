@@ -1,6 +1,28 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
 
+This script performs preprocessing and fMRI volumes stacking by:
+         - Stack volume-of-interest (VOI) data across multiple runs or sessions.
+         - Apply ROI masks to extract relevant brain regions.
+         - Normalize the data using z-score transformation.
+         - Save processed data for subsequent analyses.
+
+Key Steps:
+    1. **Load Dependencies**: Import necessary Python libraries for file handling, image processing, and data manipulation.
+    2. **Define Directories**: Set up paths for input data, output directories, and VOI masks.
+    3. **Identify Masks**: List all available ROI masks in the provided directory.
+    4. **Process Each Mask**:
+         - Load corresponding functional MRI images.
+         - Apply mask to extract relevant brain regions from each image.
+         - Normalize extracted volumes using z-score transformation.
+         - Save processed data for further analysis.
+    5. **Handle Behavioral Data**: Read and process behavioral or perceptual data associated with the VOIs.
+    6. **Save Results**: Store normalized functional data and metadata in separate files for easy access.
+
+
+This script is designed to be part of a larger fMRI preprocessing pipeline, ensuring clean and organized data for downstream analyses.
+"""
 # IMPORT BASIC DEPENDENCIES
 from pathlib import Path
 from nilearn.image import load_img

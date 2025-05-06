@@ -1,8 +1,17 @@
+"""
+This script is designed to send the behavior log files from the client side to the server side.
+
+The script will need to connect to the server side through the '1_server/1_model_training/1_scripts/1_arranging_data/1_receive_behavior_logs.py'
+ script before sending the files and placing a copy at 'files_sent' directory that will be created at the same path of the script.
+
+Note: The process of moving the log files in this package is still in the experimental phase and can encounter some issues, alternatively these files can be moved manually by the user.
+"""
 import pandas as pd
 import time
 import os
 import shutil
 from server_client_connexion import Connection
+
 csv_files_list = [ i for i in  os.listdir(".") if i.endswith(".csv") ]
 print("The existing csv files (created by opensesame) : ",csv_files_list)
 os.makedirs("files_sent",exist_ok=True)

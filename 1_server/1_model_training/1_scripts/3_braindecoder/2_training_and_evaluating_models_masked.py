@@ -1,5 +1,47 @@
  #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+Description:
+ This script trains and evaluates machine learning models for neuroimaging data classification. 
+ 
+ It supports various classifiers including SVM, Decision Trees, Random Forests, etc. 
+
+ The script performs cross-validation to assess model performance and provides 
+ detailed evaluation metrics like F1-score and ROC-AUC. It also saves trained models 
+ and results for reproducibility.
+
+Key Features:
+    - Supports multiple classification algorithms (e.g., SVM, Decision Trees, Random Forests)
+    - Implements cross-validation for robust performance estimation
+    - Includes preprocessing steps (feature selection and scaling)
+    - Provides F1-score and ROC-AUC as primary evaluation metrics
+    - Saves trained models and results for reproducibility
+    - Handles command-line arguments for model selection
+
+Code Overview:
+    1. Command Line Argument Handling
+        - Accepts a list of valid classifiers
+        - Returns the selected method or defaults to a pre-defined one
+
+    2. Data Loading & Preprocessing
+        - Loads neuroimaging data and labels from disk
+        - Applies whole-brain mask during data transformation
+        - Splits data into training and test sets using LeaveOneGroupOut cross-validation
+        - Uses NiftiMasker for data transformation based on provided masks
+
+    3. Model Training & Evaluation
+        - Sets up pipeline for different classifiers (e.g., SVM, Random Forests)
+        - Performs cross-validation to estimate performance
+        - Calculates F1-score and ROC-AUC metrics
+        - Saves final model and results to disk
+        - Handles existing models by loading them directly from disk
+
+    4. Results & Model Management
+        - Outputs mean F1-score and ROC-AUC values
+        - Creates detailed info CSV with model details and configuration
+        - Handles existing models by loading them directly
+
+"""
 import os
 import numpy as np
 import pandas as pd

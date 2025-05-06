@@ -6,7 +6,9 @@
 # INSTITUTION: Basque Center on Cognition, Brain and Language (BCBL), Spain
 # LICENCE: GNU General Public License v3.0
 ############################################################################
-
+"""
+This script is used to establish a server client connexion between two terminals (two computers) 
+"""
 import pickle
 import signal
 import socket
@@ -27,6 +29,9 @@ N_BYTES = 2000 # Maximun number of bytes to expect from connection
 TIMEOUT = 500 # Maximum number of seconds of innactivity
 
 class Connection:
+
+    """ A class to establish connection between two terminals through sockets"""
+    
     def __init__(self):
 
         self.ip = IP #Set the IP address for connection.
@@ -38,7 +43,7 @@ class Connection:
 
     def start_server(self):
 
-        """ Initialize server connection side """
+        """ A class method to initialize server connection side """
 
         self.server = socket.socket(socket.AF_INET, # Start TCP/IP socket
                                     socket.SOCK_STREAM)
@@ -69,7 +74,7 @@ class Connection:
 
     def start_client(self):
 
-        """ Initialize client connection side """
+        """A class method to initialize client connection side """
 
         self.client = socket.socket(socket.AF_INET, # Start TCP/IP socket
                                    socket.SOCK_STREAM)
@@ -87,6 +92,9 @@ class Connection:
             sys.exit() # To close the client script in case connection to specified IP and PORT fails
 
     def listen(self):
+
+        """A class method to listen for incoming packets"""
+
         print(Fore.YELLOW + '[WAITING] Waiting for messages...')
         data = []
         signal.signal(signal.SIGALRM, timeout)
@@ -106,6 +114,9 @@ class Connection:
         return message
 
     def send(self, message):
+
+        """A class method to send packets"""
+
         print(Fore.YELLOW + f'[SENDING] Sending "{message}"...')
         message = pickle.dumps(message) # Pickle the message
         self.client.send(message) # Send message

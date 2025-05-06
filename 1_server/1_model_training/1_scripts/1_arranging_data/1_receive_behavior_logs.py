@@ -8,7 +8,9 @@
 ############################################################################
 """
 This script is designed to recieve the behavior log files from the client side.
-The script will wait for the client side script of sending 
+
+The script will wait for the client side script that will send files to eventually store them at: '2.data/raw/behav' .
+
 Note: The process of moving the log files in this package is still in the experimental phase and can encounter some issues, alternatively these files can be moved manually by the user.
 """
 from server_client_connexion import Connection

@@ -6,7 +6,46 @@
 # INSTITUTION: Basque Center on Cognition, Brain and Language (BCBL), Spain
 # LICENCE: GNU General Public License v3.0
 ############################################################################
+"""
+Description:
 
+This script performs trial-level fMRI data decoding for neuroimaging analysis, 
+specifically designed for real-time applications. It processes preprocessed 
+neuroimaging volumes (e.g., fMRI) through multiple decoding approaches to 
+classify or predict cognitive states, brain states, or any target 
+conditions of interest. The script supports various machine learning 
+algorithms and provides flexible processing options based on trial 
+characteristics.
+
+Key Features:
+    - Supports real-time trial-level fMRI data decoding
+    - Implements dynamic decoding for immediate feedback in experimental setups
+    - Allows for both single-trial and aggregated (HRF-peak) decoding approaches
+    - Compatible with multiple machine learning algorithms (e.g., Logistic Regression, SVM)
+    - Includes time-efficient processing to handle rapid data streams
+    - Provides detailed timing information for each decoding step
+
+
+Inputs:
+    - preproc_vols_data: List of masked and preprocessed fMRI volumes (NifTI format)
+    - model_file: Path to a pretrained machine learning model (e.g., Logistic Regression, SVM)
+    - ground_truth: Target class label corresponding to the ground truth condition
+   (integer value)
+
+Outputs:
+    - decoding_prob: Probability of correct classification for the given volume/condition
+    - decoding_time: List containing timing information for each decoding step
+    - vols_decoding_probs: Optional output with individual probabilities for each HRF peak volume
+
+Performance Considerations:
+
+The script is optimized for efficient processing, ensuring minimal latency 
+between data acquisition and model evaluation. It supports both single-trial 
+dynamic decoding and aggregated decoding approaches, allowing flexibility in 
+experimental design. The use of pre-trained models and efficient prediction 
+algorithms ensures that even high-resolution neuroimaging data can be processed 
+quickly.
+"""
 #############################################################################################
 # IMPORT DEPENDENCIES
 #############################################################################################

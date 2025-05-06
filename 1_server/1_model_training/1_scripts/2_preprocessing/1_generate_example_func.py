@@ -5,16 +5,15 @@
 This script performs data processing steps on functional MRI (fMRI) data.
 
 The steps are as follows:
-
-1. Set up directory structure for the experiment.
-2. Identify and prepare the raw functional volume for processing.
-3. Convert the raw DICOM file to a NIFTI format using dcm2niix.
-4. Deoblique correct the NIFTI file using AFNI's 3dWarp tool.
-5. Extract the brain from the image using AFNI's Automask tool with specific parameters.
+    1. Set up directory structure for the experiment.
+    2. Identify and prepare the raw functional volume for processing.
+    3. Convert the raw DICOM file to a NIFTI format using dcm2niix.
+    4. Deoblique correct the NIFTI file using AFNI's 3dWarp tool.
+    5. Extract the brain from the image using AFNI's Automask tool with specific parameters.
 
 The script assumes that:
-- The raw DICOM files are available in a directory named 'raw' under '2.data'.
-- The processed data should be stored in a structure under 'preprocessed' directory, with example
+    - The raw DICOM files are available in a directory named 'raw' under '2.data'.
+    - The processed data should be stored in a structure under 'preprocessed' directory, with example
 functions stored in a subdirectory called 'example_func'.
 
 The code is written to run on a Unix-based system. It uses AFNI and dcm2niix tools for processing.

@@ -6,7 +6,41 @@
 # INSTITUTION: Basque Center on Cognition, Brain and Language (BCBL), Spain
 # LICENCE: GNU General Public License v3.0
 ############################################################################
+"""
+Description:
 
+This script performs real-time fMRI volume corregistration for neuroimaging analysis. 
+It processes DICOM files by converting them to NifTI format, deobliques the images, extracts the brain, 
+and aligns the volume with a reference using AFNI tools. The processed volume is masked with an ROI mask 
+and saved in a specified directory for further processing.
+
+The script processes raw fMRI data through several steps:
+        1. Copies DICOM file to preprocessing directory.
+        2. Converts DICOM file to NifTI format.
+        3. Deobliques the resulting NifTI file to match orientation.
+        4. Extracts brain tissue using AFNI Automask.
+        5. Aligns extracted brain volume to reference volume using Volreg.
+        6. Masks aligned volume with ROI mask.
+        7. Saves preprocessed volume in specified directory.
+
+Inputs:
+    - vol_file: Path to raw fMRI DICOM file
+    - mask_file: Path to Region of Interest (ROI) mask in NifTI format
+    - ref_vol_file: Path to reference volume in NifTI format
+    - preprocessed_dir: Path for saving processed files
+
+Outputs:
+    - preproc_vol: Preprocessed and aligned fMRI volume (NifTI format)
+    - corregistration_time: Dictionary with processing times for each step
+
+Performance Considerations:
+
+The script uses efficient file handling and parallel processing where possible.
+It ensures compatibility with standard neuroimaging tools like AFNI and NifTI.
+Processing times may vary depending on dataset size and hardware capabilities.
+
+
+"""
 #############################################################################################
 # IMPORT DEPENDENCIES
 #############################################################################################

@@ -1,6 +1,49 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+This script preprocesses functional MRI volumes of interest by:
+    1. Loading and transforming NIFTI images into numpy arrays.
+    2. Normalizing the volume data using z-score.
+    3. Stacking the normalized volumes across multiple runs.
 
+The script assumes that:
+    - The input files (baseline, allvols, and vols_of_interest) exist in the specified directory structure.
+    - The NIFTI images are compatible with the NiftiMasker tool for transformation.
+
+Directory Structure:
+    - exp_dir: Path to this script's directory
+        - 2.data/
+            - preprocessed/
+                - example_func/
+                - vols_of_interest/
+                    - *_baseline.nii.gz
+                    - *_allvols.nii.gz
+                    - *_vols_of_interest.csv
+                - stacked_vols_of_interest/
+
+Key Steps:
+    1. Load and transform NIFTI images into numpy arrays.
+    2. Normalize the data using z-score.
+    3. Stack volumes of interest across runs.
+    4. Save processed data in a structured directory.
+
+
+Settings:
+    detrend: Whether to remove linear trends from the data.
+
+Setup Directories:
+    Creates necessary subdirectories if they don't exist.
+    
+Functions:
+    - zscore_func: Normalizes the volume data by subtracting the mean and dividing by the standard deviation.
+    - load_data: Loads baseline, allvols, and vols_of_interest files.
+
+Processing Loop:
+    Iterates over each run's data, extracting and processing volumes of interest.
+    
+Saving Data:
+    Saves stacked volumes as NIFTI image and numpy arrays, along with mean/standard deviation for reference.
+"""
 # IMPORT BASIC DEPENDENCIES
 from pathlib import Path
 from nilearn.image import load_img, new_img_like

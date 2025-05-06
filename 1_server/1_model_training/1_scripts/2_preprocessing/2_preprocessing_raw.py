@@ -2,7 +2,16 @@
 # -*- coding: utf-8 -*-
 # conversion of DICOM files to NIFTI format, deoblique correction,
 # brain extraction, and spatial registration (correlation) with a reference volume.
-
+"""
+This script converts DICOM files to NIFTI format and performs:
+ - Deoblique correction
+ - Brain extraction using AFNI Automask
+ - Spatial registration against a reference volume (AFNI 3dvolreg)
+All processing is done in the provided directory structure.
+The script uses AFNI's dcm2niix, 3dWarp, Automask, and 3dvolreg commands.
+After processing each volume, it organizes files into run-specific directories
+and removes unnecessary intermediate files to save space.
+"""
 from pathlib import Path
 from nipype.interfaces import afni as afni
 import shutil

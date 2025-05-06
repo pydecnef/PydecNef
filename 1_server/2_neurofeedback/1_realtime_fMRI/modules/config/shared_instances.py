@@ -6,13 +6,13 @@
 # INSTITUTION: Basque Center on Cognition, Brain and Language (BCBL), Spain
 # LICENCE: GNU General Public License v3.0
 ############################################################################
+"""Description:
 
-#############################################################################################
-# DESCRIPTION
-#############################################################################################
+This script includes indicated class objects instantiated in main.py which are then shared across all framework modules
+as global variables to facilitate processing in threads and returning results, and sychronization between modules
 
-# Here are indicated class objects instantiated in main.py which are then shared across all framework modules
-# as global variables to facilitate processing in threads and returning results, and sychronization between modules
+
+"""
 
 server = None # Corresponding class in modules/config/connection_config.py
 timeseries = None # Corresponding class in modules/classes/classes.py
