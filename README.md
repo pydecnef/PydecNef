@@ -17,6 +17,7 @@ PyDecNef2.0 includes an intuitive and efficient Python framework for real-time f
 ![ML](.img/ML_performance_comparison.png)
 
 PyDecNef2.0: is an open-source, Python-based real-time fMRI decoded neurofeedback framework, that supports extensive customization and personalization for various experimental setups.
+**Access the full Documentation at: [PyDecNef 2.0](https://pydecnef.github.io/docs/)
 
 **For more information and tutorials visit the previous version [pyDecNef 1.0](https://pedromargolles.github.io/pyDecNef/).**
 
