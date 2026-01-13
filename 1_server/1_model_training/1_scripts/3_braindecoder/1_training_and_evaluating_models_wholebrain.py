@@ -119,9 +119,9 @@ def main():
 
     # Define data directories and load data
     exp_dir = os.path.abspath(os.path.join(os.path.abspath(__file__),os.pardir,os.pardir,os.pardir) )   
-    data_dir = os.path.join(exp_dir, "2.data", "preprocessed","stacked_vols_of_interest")
+    data_dir = os.path.join(exp_dir, "2_data", "preprocessed","stacked_vols_of_interest")
     working_data_path = os.path.join(data_dir, "detrended_zscored_stacked_vols_of_interest.nii.gz")
-    wholebrain_mask_path = os.path.join(exp_dir,"2.data","preprocessed", "example_func","example_func_deoblique_brainmask.nii")
+    wholebrain_mask_path = os.path.join(exp_dir,"2_data","preprocessed", "example_func","example_func_deoblique_brainmask.nii")
 
 
     # Load data
@@ -298,7 +298,7 @@ def main():
 
     elif selected_method == "evaluating_existing_model":
         # If no existing model, raise error
-        evaluated_model_path = os.path.join(exp_dir,"3.models", "wholebrain", "evaluated_model")
+        evaluated_model_path = os.path.join(exp_dir,"3_models", "wholebrain", "evaluated_model")
         if not os.path.exists(evaluated_model_path):
             print(f"Path: {evaluated_model_path} does not exist. Please ensure the model is saved there with that naming scheme.")
             sys.exit(1)
@@ -323,9 +323,9 @@ def main():
     # Final evaluation (for non-existing models)
     if selected_method != "evaluating_existing_model":
         pipeline.fit(wholebrain_data, wholebrain_labels)
-        os.makedirs(os.path.join(exp_dir, "3.models","wholebrain") ,exist_ok=True)
+        os.makedirs(os.path.join(exp_dir, "3_models","wholebrain") ,exist_ok=True)
         model_file_name = f"sklearn_decoder"
-        model_path = os.path.join(exp_dir,"3.models", "wholebrain", model_file_name)
+        model_path = os.path.join(exp_dir,"3_models", "wholebrain", model_file_name)
         joblib.dump(pipeline, model_path)
 
         print(f"Final Accuracy (F1-score): {f_score_res,np.mean(f_score_res)}")
@@ -342,7 +342,7 @@ def main():
         info_df["pipeline_components"] = ["LinearSVC calibrated"]
 
     if selected_method != "evaluating_existing_model":
-        model_info = os.path.join(exp_dir,"3.models", "wholebrain", "info.csv")
+        model_info = os.path.join(exp_dir,"3_models", "wholebrain", "info.csv")
         try:
             df_info = pd.read_csv(model_info)
             df_info = pd.concat([df_info, info_df], ignore_index=True).reset_index(drop=True)

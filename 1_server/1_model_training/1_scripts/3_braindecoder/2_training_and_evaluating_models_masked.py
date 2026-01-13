@@ -122,7 +122,7 @@ def main():
 
     # Define data directories and load data
     exp_dir = os.path.abspath(os.path.join(os.path.abspath(__file__),os.pardir,os.pardir,os.pardir) )   
-    data_dir = os.path.join(exp_dir, "2.data", "preprocessed","stacked_vols_of_interest")
+    data_dir = os.path.join(exp_dir, "2_data", "preprocessed","stacked_vols_of_interest")
     working_data_path = os.path.join(data_dir, "detrended_zscored_stacked_vols_of_interest.nii.gz")
 
     if selected_method == "svm":
@@ -276,7 +276,7 @@ def main():
 
     elif selected_method == "evaluating_existing_model":
         # If no existing model, raise error
-        evaluated_model_path = os.path.join(exp_dir,"3.models", "masked", "evaluated_model")
+        evaluated_model_path = os.path.join(exp_dir,"3_models", "masked", "evaluated_model")
         if not os.path.exists(evaluated_model_path):
             print(f"Path: {evaluated_model_path} does not exist. Please ensure the model is saved there with that naming scheme.")
             sys.exit(1)
@@ -286,7 +286,7 @@ def main():
     else:
         pipeline = make_pipeline(LogisticRegression())
 
-    rois_dir = os.path.join(exp_dir,'2.data','rois_masks')
+    rois_dir = os.path.join(exp_dir,'2_data','rois_masks')
     # list of mask names available in rois_mask folder used in the ROI masking process 
     masks = os.listdir(rois_dir)
     masks = [i.split(".")[0] for i in masks if not i.startswith(".") ]
@@ -296,11 +296,11 @@ def main():
         print(f"TRAINING WITH MASK: {mask}")
         try:
     # Create maskers and transform data
-            wholebrain_mask = os.path.join(exp_dir,"2.data", "rois_masks",f"{mask}.nii")
+            wholebrain_mask = os.path.join(exp_dir,"2_data", "rois_masks",f"{mask}.nii")
             masker = NiftiMasker(wholebrain_mask,).fit()
         except ValueError:
     # Create maskers and transform data
-            wholebrain_mask = os.path.join(exp_dir,"2.data", "rois_masks",f"{mask}.nii.gz")
+            wholebrain_mask = os.path.join(exp_dir,"2_data", "rois_masks",f"{mask}.nii.gz")
             masker = NiftiMasker(wholebrain_mask).fit()
     # Load data
         df_labels = pd.read_csv(os.path.join(data_dir, "detrended_zscored_stacked_vols_of_interest_labels.csv"))
@@ -338,9 +338,9 @@ def main():
         if selected_method != "evaluating_existing_model":
             pipeline.fit(wholebrain_data, wholebrain_labels)
 
-            os.makedirs(os.path.join(exp_dir, "3.models","masked",mask) ,exist_ok=True)
+            os.makedirs(os.path.join(exp_dir, "3_models","masked",mask) ,exist_ok=True)
             model_file_name = f"sklearn_decoder_{mask}"
-            model_path = os.path.join(exp_dir, "3.models","masked",mask, model_file_name)
+            model_path = os.path.join(exp_dir, "3_models","masked",mask, model_file_name)
             joblib.dump(pipeline, model_path)
 
             print(f"Final Accuracy (F1-score): {f_score_res,np.mean(f_score_res)}")
@@ -358,7 +358,7 @@ def main():
             info_df["pipeline_components"] = ["LinearSVC calibrated"]
 
         if selected_method != "evaluating_existing_model":
-            model_info = os.path.join(exp_dir,"3.models", "masked", "info.csv")
+            model_info = os.path.join(exp_dir,"3_models", "masked", "info.csv")
             try:
                 df_info = pd.read_csv(model_info)
                 df_info = pd.concat([df_info, info_df], ignore_index=True).reset_index(drop=True)

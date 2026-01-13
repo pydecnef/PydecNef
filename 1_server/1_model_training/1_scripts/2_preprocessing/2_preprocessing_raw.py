@@ -19,8 +19,8 @@ import subprocess
 import os
 # Define the file structure for organization
 exp_dir = os.path.abspath(os.path.join(os.path.abspath(__file__),os.pardir,os.pardir,os.pardir) )    #Path().absolute()
-raw_vols_dir = Path(os.path.join(exp_dir, '2.data','raw','func'))
-preprocessed_dir = os.path.join(exp_dir,'2.data', 'preprocessed')
+raw_vols_dir = Path(os.path.join(exp_dir, '2_data','raw','func'))
+preprocessed_dir = os.path.join(exp_dir,'2_data', 'preprocessed')
 func_dir = os.path.join(preprocessed_dir, 'func')
 os.makedirs(func_dir,exist_ok=True)
 example_func_dir = os.path.join(preprocessed_dir,'example_func')

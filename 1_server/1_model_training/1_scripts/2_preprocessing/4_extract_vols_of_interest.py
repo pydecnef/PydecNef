@@ -36,8 +36,8 @@ trial_idx_column = 'trial_idx' # trial idx column name in the behavioral data fi
 
 # SET FILE STRUCTURE
 exp_dir = os.path.abspath(os.path.join(os.path.abspath(__file__),os.pardir,os.pardir,os.pardir) )
-preprocessed_dir =os.path.join(exp_dir,'2.data', 'preprocessed')
-behav_dir = Path(os.path.join(exp_dir,'2.data','raw','behav'))
+preprocessed_dir =os.path.join(exp_dir,'2_data', 'preprocessed')
+behav_dir = Path(os.path.join(exp_dir,'2_data','raw','behav'))
 func_dir = Path(os.path.join(preprocessed_dir,'func'))
 vols_of_interest_dir = os.path.join(preprocessed_dir,'vols_of_interest')
 os.makedirs(vols_of_interest_dir,exist_ok=True)

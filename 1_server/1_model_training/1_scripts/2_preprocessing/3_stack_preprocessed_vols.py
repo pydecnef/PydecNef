@@ -25,7 +25,7 @@ from nilearn.image import concat_imgs
 # Set file structure
 import os
 exp_dir = os.path.abspath(os.path.join(os.path.abspath(__file__),os.pardir,os.pardir,os.pardir) )    #Path().absolute()
-preprocessed_dir = os.path.join(exp_dir,'2.data', 'preprocessed')
+preprocessed_dir = os.path.join(exp_dir,'2_data', 'preprocessed')
 func_dir = Path(os.path.join(preprocessed_dir,'func'))
 # STACK ALL PREPROCESSED RAW VOLS BY RUN
 for folder in func_dir.iterdir():
