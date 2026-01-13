@@ -36,7 +36,7 @@ recorded_data_main_folder = "/firmm/"
 # Toggle for test mode to alter data paths.
 test_mode = True
 if test_mode:
-    recorded_data_main_folder = os.path.join(os.path.abspath(os.path.join(os.getcwd(), os.pardir,os.pardir)),"2.data","recorded_data")
+    recorded_data_main_folder = os.path.join(os.path.abspath(os.path.join(os.getcwd(), os.pardir,os.pardir)),"2_data","recorded_data")
 
 # Print confirmation of the main data folder path
 print("Main folder for recorded data:", recorded_data_main_folder)
