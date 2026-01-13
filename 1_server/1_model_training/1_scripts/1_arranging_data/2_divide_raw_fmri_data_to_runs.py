@@ -77,7 +77,7 @@ print(f"Chosen raw training path to extract runs from: {raw_training_data_path}"
 raw_data_list = [file for file in  os.listdir(raw_training_data_path) if not file.startswith(".")]
 
 # Identify unique run IDs from filenames.
-run_ids = [file.split("_")[1] for file in os.listdir(raw_data_list)]
+run_ids = [file.split("_")[1] for file in raw_data_list]
 unique_runs = sorted(list(set(run_ids)))
 
 print("The number of runs found:",len(unique_runs),"| Runs:",unique_runs )
@@ -95,7 +95,7 @@ for i, pattern in enumerate(unique_runs):
         os.makedirs(dest_path)
         folders_exits = False
         print(f"Moving the run files to the decoder training directory for: run_{i}")
-        for file in os.listdir(raw_data_list):
+        for file in raw_data_list:
             if pattern in file.split("_")[1]:
                 shutil.copy(src=os.path.join(raw_training_data_path,file),dst= os.path.join(dest_path,file))
     else:
