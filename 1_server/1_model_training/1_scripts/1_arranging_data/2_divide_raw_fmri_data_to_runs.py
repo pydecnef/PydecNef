@@ -83,7 +83,7 @@ unique_runs = sorted(list(set(run_ids)))
 print("The number of runs found:",len(unique_runs),"| Runs:",unique_runs )
 
 # Define the path to the decoder's training folder.
-decoder_training_folder_path = os.path.abspath(os.path.join(os.path.abspath(__file__),os.pardir,os.pardir,os.pardir,"2.data"))
+decoder_training_folder_path = os.path.abspath(os.path.join(os.path.abspath(__file__),os.pardir,os.pardir,os.pardir,"2_data"))
 print("Decoder training data folder path:",decoder_training_folder_path)
 
 # Organize files into runs within the decoder's raw/func directory.
