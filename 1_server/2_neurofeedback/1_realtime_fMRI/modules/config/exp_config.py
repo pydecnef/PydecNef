@@ -28,7 +28,7 @@ init(autoreset=True)
 # Here you can set experimental, MRI scanner parameters and directory routes
 
 config_file =  os.path.join(Path(__file__).absolute().parent.parent.parent.parent,"config.ini")
-config = configparser.ConfigParser()
+config = configparser.ConfigParser(inline_comment_prefixes=";")
 config.read(config_file)
 
 
